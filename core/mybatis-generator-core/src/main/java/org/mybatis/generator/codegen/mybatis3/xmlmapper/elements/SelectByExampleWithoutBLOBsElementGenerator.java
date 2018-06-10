@@ -1,5 +1,5 @@
 /**
- *    Copyright 2006-2016 the original author or authors.
+ *    Copyright 2006-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,12 +22,9 @@ import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
 /**
- * 
  * @author Jeff Butler
- * 
  */
-public class SelectByExampleWithoutBLOBsElementGenerator extends
-        AbstractXmlElementGenerator {
+public class SelectByExampleWithoutBLOBsElementGenerator extends AbstractXmlElementGenerator {
 
     public SelectByExampleWithoutBLOBsElementGenerator() {
         super();
@@ -41,8 +38,7 @@ public class SelectByExampleWithoutBLOBsElementGenerator extends
 
         answer.addAttribute(new Attribute("id", //$NON-NLS-1$
                 introspectedTable.getSelectByExampleStatementId()));
-        answer.addAttribute(new Attribute(
-                "resultMap", introspectedTable.getBaseResultMapId())); //$NON-NLS-1$
+        answer.addAttribute(new Attribute("resultMap", introspectedTable.getBaseResultMapId())); //$NON-NLS-1$
         answer.addAttribute(new Attribute("parameterType", fqjt)); //$NON-NLS-1$
 
         context.getCommentGenerator().addComment(answer);
@@ -54,8 +50,7 @@ public class SelectByExampleWithoutBLOBsElementGenerator extends
         answer.addElement(ifElement);
 
         StringBuilder sb = new StringBuilder();
-        if (stringHasValue(introspectedTable
-                .getSelectByExampleQueryId())) {
+        if (stringHasValue(introspectedTable.getSelectByExampleQueryId())) {
             sb.append('\'');
             sb.append(introspectedTable.getSelectByExampleQueryId());
             sb.append("' as QUERYID,"); //$NON-NLS-1$
@@ -65,8 +60,7 @@ public class SelectByExampleWithoutBLOBsElementGenerator extends
 
         sb.setLength(0);
         sb.append("from "); //$NON-NLS-1$
-        sb.append(introspectedTable
-                .getAliasedFullyQualifiedTableNameAtRuntime());
+        sb.append(introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime());
         answer.addElement(new TextElement(sb.toString()));
         answer.addElement(getExampleIncludeElement());
 
@@ -74,10 +68,14 @@ public class SelectByExampleWithoutBLOBsElementGenerator extends
         ifElement.addAttribute(new Attribute("test", "orderByClause != null")); //$NON-NLS-1$ //$NON-NLS-2$
         ifElement.addElement(new TextElement("order by ${orderByClause}")); //$NON-NLS-1$
         answer.addElement(ifElement);
+        //--=-wangzhifeng 分页
+        XmlElement page = new XmlElement("if"); //$NON-NLS-1$
+        page.addAttribute(new Attribute("test", "offSet !=null and length != null")); //$NON-NLS-1$ //$NON-NLS-2$
+        page.addElement(new TextElement("limit ${offSet}, ${length}")); //$NON-NLS-1$
+        answer.addElement(page);
+        //-----        
 
-        if (context.getPlugins()
-                .sqlMapSelectByExampleWithoutBLOBsElementGenerated(answer,
-                        introspectedTable)) {
+        if (context.getPlugins().sqlMapSelectByExampleWithoutBLOBsElementGenerated(answer, introspectedTable)) {
             parentElement.addElement(answer);
         }
     }

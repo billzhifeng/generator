@@ -1,5 +1,5 @@
 /**
- *    Copyright 2006-2017 the original author or authors.
+ *    Copyright 2006-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,55 +27,54 @@ import java.util.StringTokenizer;
  *
  * @author Jeff Butler
  */
-public class FullyQualifiedJavaType implements
-        Comparable<FullyQualifiedJavaType> {
-    
-    private static final String JAVA_LANG = "java.lang"; //$NON-NLS-1$
+public class FullyQualifiedJavaType implements Comparable<FullyQualifiedJavaType> {
 
-    private static FullyQualifiedJavaType intInstance = null;
+    private static final String           JAVA_LANG                 = "java.lang"; //$NON-NLS-1$
 
-    private static FullyQualifiedJavaType stringInstance = null;
+    private static FullyQualifiedJavaType intInstance               = null;
 
-    private static FullyQualifiedJavaType booleanPrimitiveInstance = null;
+    private static FullyQualifiedJavaType stringInstance            = null;
 
-    private static FullyQualifiedJavaType objectInstance = null;
+    private static FullyQualifiedJavaType booleanPrimitiveInstance  = null;
 
-    private static FullyQualifiedJavaType dateInstance = null;
+    private static FullyQualifiedJavaType objectInstance            = null;
 
-    private static FullyQualifiedJavaType criteriaInstance = null;
+    private static FullyQualifiedJavaType dateInstance              = null;
+
+    private static FullyQualifiedJavaType criteriaInstance          = null;
 
     private static FullyQualifiedJavaType generatedCriteriaInstance = null;
 
     /** The short name without any generic arguments. */
-    private String baseShortName;
+    private String                        baseShortName;
 
     /** The fully qualified name without any generic arguments. */
-    private String baseQualifiedName;
+    private String                        baseQualifiedName;
 
-    private boolean explicitlyImported;
+    private boolean                       explicitlyImported;
 
-    private String packageName;
+    private String                        packageName;
 
-    private boolean primitive;
+    private boolean                       primitive;
 
-    private boolean isArray;
+    private boolean                       isArray;
 
-    private PrimitiveTypeWrapper primitiveTypeWrapper;
+    private PrimitiveTypeWrapper          primitiveTypeWrapper;
 
-    private List<FullyQualifiedJavaType> typeArguments;
+    private List<FullyQualifiedJavaType>  typeArguments;
 
     // the following three values are used for dealing with wildcard types
-    private boolean wildcardType;
+    private boolean                       wildcardType;
 
-    private boolean boundedWildcard;
+    private boolean                       boundedWildcard;
 
-    private boolean extendsBoundedWildcard;
+    private boolean                       extendsBoundedWildcard;
 
     /**
-     * Use this constructor to construct a generic type with the specified type parameters.
+     * Use this constructor to construct a generic type with the specified type
+     * parameters.
      *
-     * @param fullTypeSpecification
-     *            the full type specification
+     * @param fullTypeSpecification the full type specification
      */
     public FullyQualifiedJavaType(String fullTypeSpecification) {
         super();
@@ -132,8 +131,8 @@ public class FullyQualifiedJavaType implements
     }
 
     /**
-     * Returns a list of Strings that are the fully qualified names of this type, and any generic type argument
-     * associated with this type.
+     * Returns a list of Strings that are the fully qualified names of this
+     * type, and any generic type argument associated with this type.
      *
      * @return the import list
      */
@@ -266,6 +265,10 @@ public class FullyQualifiedJavaType implements
         return intInstance;
     }
 
+    public static final FullyQualifiedJavaType getInteger() {
+        return new FullyQualifiedJavaType("java.lang.Integer"); //$NON-NLS-1$
+    }
+
     public static final FullyQualifiedJavaType getNewMapInstance() {
         // always return a new instance because the type may be parameterized
         return new FullyQualifiedJavaType("java.util.Map"); //$NON-NLS-1$
@@ -333,8 +336,7 @@ public class FullyQualifiedJavaType implements
 
     public static final FullyQualifiedJavaType getGeneratedCriteriaInstance() {
         if (generatedCriteriaInstance == null) {
-            generatedCriteriaInstance = new FullyQualifiedJavaType(
-                    "GeneratedCriteria"); //$NON-NLS-1$
+            generatedCriteriaInstance = new FullyQualifiedJavaType("GeneratedCriteria"); //$NON-NLS-1$
         }
 
         return generatedCriteriaInstance;
@@ -358,11 +360,11 @@ public class FullyQualifiedJavaType implements
             if (spec.startsWith("extends ")) { //$NON-NLS-1$
                 boundedWildcard = true;
                 extendsBoundedWildcard = true;
-                spec = spec.substring(8);  // "extends ".length()
+                spec = spec.substring(8); // "extends ".length()
             } else if (spec.startsWith("super ")) { //$NON-NLS-1$
                 boundedWildcard = true;
                 extendsBoundedWildcard = false;
-                spec = spec.substring(6);  // "super ".length()
+                spec = spec.substring(6); // "super ".length()
             } else {
                 boundedWildcard = false;
             }
@@ -375,8 +377,7 @@ public class FullyQualifiedJavaType implements
                 simpleParse(fullTypeSpecification.substring(0, index));
                 int endIndex = fullTypeSpecification.lastIndexOf('>');
                 if (endIndex == -1) {
-                    throw new RuntimeException(getString(
-                            "RuntimeError.22", fullTypeSpecification)); //$NON-NLS-1$
+                    throw new RuntimeException(getString("RuntimeError.22", fullTypeSpecification)); //$NON-NLS-1$
                 }
                 genericParse(fullTypeSpecification.substring(index, endIndex + 1));
             }
@@ -393,8 +394,7 @@ public class FullyQualifiedJavaType implements
         baseQualifiedName = typeSpecification.trim();
         if (baseQualifiedName.contains(".")) { //$NON-NLS-1$
             packageName = getPackage(baseQualifiedName);
-            baseShortName = baseQualifiedName
-                    .substring(packageName.length() + 1);
+            baseShortName = baseQualifiedName.substring(packageName.length() + 1);
             int index = baseShortName.lastIndexOf('.');
             if (index != -1) {
                 baseShortName = baseShortName.substring(index + 1);
@@ -418,15 +418,13 @@ public class FullyQualifiedJavaType implements
                 primitiveTypeWrapper = PrimitiveTypeWrapper.getShortInstance();
             } else if ("int".equals(baseQualifiedName)) { //$NON-NLS-1$
                 primitive = true;
-                primitiveTypeWrapper = PrimitiveTypeWrapper
-                        .getIntegerInstance();
+                primitiveTypeWrapper = PrimitiveTypeWrapper.getIntegerInstance();
             } else if ("long".equals(baseQualifiedName)) { //$NON-NLS-1$
                 primitive = true;
                 primitiveTypeWrapper = PrimitiveTypeWrapper.getLongInstance();
             } else if ("char".equals(baseQualifiedName)) { //$NON-NLS-1$
                 primitive = true;
-                primitiveTypeWrapper = PrimitiveTypeWrapper
-                        .getCharacterInstance();
+                primitiveTypeWrapper = PrimitiveTypeWrapper.getCharacterInstance();
             } else if ("float".equals(baseQualifiedName)) { //$NON-NLS-1$
                 primitive = true;
                 primitiveTypeWrapper = PrimitiveTypeWrapper.getFloatInstance();
@@ -435,8 +433,7 @@ public class FullyQualifiedJavaType implements
                 primitiveTypeWrapper = PrimitiveTypeWrapper.getDoubleInstance();
             } else if ("boolean".equals(baseQualifiedName)) { //$NON-NLS-1$
                 primitive = true;
-                primitiveTypeWrapper = PrimitiveTypeWrapper
-                        .getBooleanInstance();
+                primitiveTypeWrapper = PrimitiveTypeWrapper.getBooleanInstance();
             } else {
                 primitive = false;
                 primitiveTypeWrapper = null;
@@ -448,8 +445,7 @@ public class FullyQualifiedJavaType implements
         int lastIndex = genericSpecification.lastIndexOf('>');
         if (lastIndex == -1) {
             // shouldn't happen - should be caught already, but just in case...
-            throw new RuntimeException(getString(
-                    "RuntimeError.22", genericSpecification)); //$NON-NLS-1$
+            throw new RuntimeException(getString("RuntimeError.22", genericSpecification)); //$NON-NLS-1$
         }
         String argumentString = genericSpecification.substring(1, lastIndex);
         // need to find "," outside of a <> bounds
@@ -466,8 +462,7 @@ public class FullyQualifiedJavaType implements
                 openCount--;
             } else if (",".equals(token)) { //$NON-NLS-1$
                 if (openCount == 0) {
-                    typeArguments
-                            .add(new FullyQualifiedJavaType(sb.toString()));
+                    typeArguments.add(new FullyQualifiedJavaType(sb.toString()));
                     sb.setLength(0);
                 } else {
                     sb.append(token);
@@ -478,8 +473,7 @@ public class FullyQualifiedJavaType implements
         }
 
         if (openCount != 0) {
-            throw new RuntimeException(getString(
-                    "RuntimeError.22", genericSpecification)); //$NON-NLS-1$
+            throw new RuntimeException(getString("RuntimeError.22", genericSpecification)); //$NON-NLS-1$
         }
 
         String finalType = sb.toString();
@@ -490,13 +484,13 @@ public class FullyQualifiedJavaType implements
 
     /**
      * Returns the package name of a fully qualified type.
-     * 
-     * <p>This method calculates the package as the part of the fully qualified name up to, but not including, the last
-     * element. Therefore, it does not support fully qualified inner classes. Not totally fool proof, but correct in
-     * most instances.
+     * <p>
+     * This method calculates the package as the part of the fully qualified
+     * name up to, but not including, the last element. Therefore, it does not
+     * support fully qualified inner classes. Not totally fool proof, but
+     * correct in most instances.
      *
-     * @param baseQualifiedName
-     *            the base qualified name
+     * @param baseQualifiedName the base qualified name
      * @return the package
      */
     private static String getPackage(String baseQualifiedName) {
